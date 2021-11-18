@@ -1,0 +1,29 @@
+//     Event Filter
+    $(document).on('click','.event-list', function(){
+      	let collection_name;
+      	let check_array = $('.event-list:checked').length;
+        if(check_array > 1){
+          let a = [];
+          $('.event-list:checked').each(function(i){
+            a.push('tag:'+$(this).attr('data-collection'))
+          });
+            collection_name = a.join(' OR ');
+        }
+      	else if(check_array == 0){
+        	collection_name = param_x;
+        }
+      	else{
+        	collection_name = 'tag:' +$('.event-list:checked').attr('data-collection');
+        }
+        $.ajax({
+          url: '/search?q='+collection_name,
+          type:'GET',
+          success: function(res){            
+            $('#ProductGridContainer ul').html($(res).find('#ProductGridContainer ul').html());
+            $('#FacetFiltersForm').html($(res).find('#FacetFiltersForm').html());
+            $('#FacetFiltersForm').find('input[type="hidden"]').val(collection_name);
+            window.history.pushState(null, null, '/search?q='+collection_name);
+          }
+        })
+    })
+  });
